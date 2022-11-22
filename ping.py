@@ -47,15 +47,19 @@ def log_status(service_key: str, new_status = 'up', code = 200):
 
 if __name__ == '__main__':
     for service_key in SERVICES:
+        ssl = True
         try:
             url = SERVICES[service_key].url
             print(f"Pinging {SERVICES[service_key].name} ({url}) ...")
             resp = requests.get(url)
         except SSLError as e:
+            ssl = False
             print("- Unable to verify SSL certificate; retrying without verifying ...")
             resp = requests.get(url, verify=False)
         code = resp.status_code
         new_status = "up" if resp.ok else "down"
+        if not ssl:
+            new_status += "-nossl"
         last_status = check_last_status(service_key)
         log_status(service_key, new_status, code)
         if last_status != new_status:
