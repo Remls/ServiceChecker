@@ -1,0 +1,4 @@
+*/**.pyc
+config.py
+logs/*
+!logs/README.md
