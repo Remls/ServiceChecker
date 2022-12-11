@@ -1,6 +1,6 @@
 # Service Checker
 
-Ping to see if services are up, and send results to Telegram.
+Ping to see if services are up, and send results to Telegram and/or Discord.
 
 ### Setup
 
