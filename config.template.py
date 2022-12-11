@@ -25,5 +25,5 @@ DISCORD_MESSAGE_FORMAT = {
 SERVICES = {
     "service-1": Service("Service 1", Tag.API, "https://some.url"),
     "service-2": Service("Service 2", Tag.WEBAPP, "https://some.url"),
-    "service-3": Service("Service 3", Tag.WEBSITE, "https://some.url"),
+    "service-3": Service("Service 3", Tag.WEBSITE, "https://some.url", "some-custom-key"),
 }
