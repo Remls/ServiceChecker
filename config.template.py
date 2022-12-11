@@ -2,9 +2,11 @@ from service_class import Service, Tag
 
 
 # Telegram
-# Leave TG_BOT_TOKEN and TG_CHAT_ID empty if you don't want to use Telegram
+# Leave TG_BOT_TOKEN and TG_CHAT_IDS empty if you don't want to use Telegram
 TG_BOT_TOKEN = "112233:ABCDEF"
-TG_CHAT_ID = "-1001111111"
+TG_CHAT_IDS = [
+    "-1001111111",
+]
 TG_MESSAGE_FORMAT = {
     "up": "🟢 <code>[$TAG$]</code> $SERVICE$ is up ($CODE$)",
     "down": "🔴 <code>[$TAG$]</code> $SERVICE$ is down ($CODE$)",
@@ -13,8 +15,10 @@ TG_MESSAGE_FORMAT = {
 }
 
 # Discord
-# Leave DISCORD_WEBHOOK_URL empty if you don't want to use Discord
-DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz"
+# Leave DISCORD_WEBHOOKS empty if you don't want to use Discord
+DISCORD_WEBHOOKS = [
+    "https://discordapp.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz",
+]
 DISCORD_MESSAGE_FORMAT = {
     "up": "🟢 `[$TAG$]` $SERVICE$ is up ($CODE$)",
     "down": "🔴 `[$TAG$]` $SERVICE$ is down ($CODE$)",

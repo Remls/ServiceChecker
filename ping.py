@@ -4,11 +4,11 @@ from service_class import Service
 import re
 import os
 import datetime
-from config import SERVICES, TG_BOT_TOKEN, TG_CHAT_ID, TG_MESSAGE_FORMAT, DISCORD_WEBHOOK_URL, DISCORD_MESSAGE_FORMAT
+from config import SERVICES, TG_BOT_TOKEN, TG_CHAT_IDS, TG_MESSAGE_FORMAT, DISCORD_WEBHOOKS, DISCORD_MESSAGE_FORMAT
 
 
 def send_telegram_message(service: Service, new_status = 'up', code = 200, silent = False):
-    if not TG_BOT_TOKEN or not TG_CHAT_ID:
+    if not TG_BOT_TOKEN or not TG_CHAT_IDS:
         print("Telegram is not configured; skipping ...")
         return
 
@@ -16,18 +16,19 @@ def send_telegram_message(service: Service, new_status = 'up', code = 200, silen
     text = re.sub(r"\$TAG\$", service.tag.value, text)
     text = re.sub(r"\$SERVICE\$", service.name, text)
     text = re.sub(r"\$CODE\$", str(code), text)
-    requests.get(
-        f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage",
-        params = {
-            "chat_id": TG_CHAT_ID,
-            "text": text,
-            "parse_mode": "HTML",
-            "disable_notification": silent
-        }
-    )
+    for chat_id in TG_CHAT_IDS:
+        requests.get(
+            f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage",
+            params = {
+                "chat_id": chat_id,
+                "text": text,
+                "parse_mode": "HTML",
+                "disable_notification": silent
+            }
+        )
 
 def send_discord_message(service: Service, new_status = 'up', code = 200, silent = False):
-    if not DISCORD_WEBHOOK_URL:
+    if not DISCORD_WEBHOOKS:
         print("Discord is not configured; skipping ...")
         return
 
@@ -35,12 +36,13 @@ def send_discord_message(service: Service, new_status = 'up', code = 200, silent
     text = re.sub(r"\$TAG\$", service.tag.value, text)
     text = re.sub(r"\$SERVICE\$", service.name, text)
     text = re.sub(r"\$CODE\$", str(code), text)
-    requests.post(
-        DISCORD_WEBHOOK_URL,
-        json = {
-            "content": text,
-        }
-    )
+    for webhook_url in DISCORD_WEBHOOKS:
+        requests.post(
+            webhook_url,
+            json = {
+                "content": text,
+            }
+        )
 
 def get_logfile_name(service: Service):
     return f"logs/{service.key}.log"
