@@ -1,6 +1,6 @@
 import requests
 from requests.exceptions import SSLError
-from service_class import Service
+from ping_classes import Service
 import re
 import os
 import datetime

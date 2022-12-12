@@ -1,4 +1,4 @@
-from service_class import Service, Tag
+from ping_classes import Service, Tag
 
 
 # Telegram
