@@ -1,6 +1,7 @@
 import requests
 from requests.exceptions import SSLError
-from ping_classes import Service, PingResponse
+from ping_classes import PingResponse
+from file_functions import remove_logfile, check_last_status, log_status
 import os
 from config import SERVICES, TG_BOT_TOKEN, TG_CHAT_IDS, TG_MESSAGE_FORMAT, DISCORD_WEBHOOKS, DISCORD_MESSAGE_FORMAT
 
@@ -37,33 +38,6 @@ def send_discord_message(ping_response: PingResponse):
                 "content": text,
             }
         )
-
-def get_logfile_name(service: Service):
-    return f"logs/{service.key}.log"
-
-def remove_logfile(service: Service):
-    log = get_logfile_name(service)
-    if os.path.exists(log):
-        os.remove(log)
-
-def check_last_status(service: Service):
-    log = get_logfile_name(service)
-    if not os.path.exists(log):
-        return None
-    with open(log) as f:
-        lines = f.readlines()
-        if not lines:
-            return None
-        lines.reverse()
-        for l in lines:
-            if l:
-                return l.split(' - ')[1].strip()
-    return None
-
-def log_status(ping_response: PingResponse):
-    log = get_logfile_name(ping_response.service)
-    with open(log, 'a') as f:
-        f.write(f"{ping_response}\n")
 
 
 if __name__ == '__main__':
