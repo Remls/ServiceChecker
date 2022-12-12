@@ -25,7 +25,6 @@ class Service:
 
         return key
 
-
     def __init__(self, name: str, tag: Tag, url: str, key: str = None):
         self.name = name
         self.tag = tag
