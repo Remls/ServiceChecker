@@ -1,19 +1,17 @@
 import requests
 from requests.exceptions import SSLError
-from ping_classes import Service
-import re
+from ping_classes import Service, PingResponse
 import os
-import datetime
 from config import SERVICES, TG_BOT_TOKEN, TG_CHAT_IDS, TG_MESSAGE_FORMAT, DISCORD_WEBHOOKS, DISCORD_MESSAGE_FORMAT
 
 
-def send_telegram_message(service: Service, new_status = 'up', code = 200, ping_time = 0, silent = False):
+def send_telegram_message(ping_response: PingResponse, silent = False):
     if not TG_BOT_TOKEN or not TG_CHAT_IDS:
         print("Telegram is not configured; skipping ...")
         return
 
-    template = TG_MESSAGE_FORMAT[new_status]
-    text = format_message(template, service, code, ping_time)
+    template = TG_MESSAGE_FORMAT[ping_response.status]
+    text = ping_response.format_message(template)
     for chat_id in TG_CHAT_IDS:
         requests.get(
             f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage",
@@ -25,13 +23,13 @@ def send_telegram_message(service: Service, new_status = 'up', code = 200, ping_
             }
         )
 
-def send_discord_message(service: Service, new_status = 'up', code = 200, ping_time = 0):
+def send_discord_message(ping_response: PingResponse):
     if not DISCORD_WEBHOOKS:
         print("Discord is not configured; skipping ...")
         return
 
-    template = DISCORD_MESSAGE_FORMAT[new_status]
-    text = format_message(template, service, code, ping_time)
+    template = DISCORD_MESSAGE_FORMAT[ping_response.status]
+    text = ping_response.format_message(template)
     for webhook_url in DISCORD_WEBHOOKS:
         requests.post(
             webhook_url,
@@ -39,13 +37,6 @@ def send_discord_message(service: Service, new_status = 'up', code = 200, ping_t
                 "content": text,
             }
         )
-
-def format_message(template: str, service: Service, code = 200, ping_time = 0):
-    template = re.sub(r"\$TAG\$", service.tag.value, template)
-    template = re.sub(r"\$SERVICE\$", service.name, template)
-    template = re.sub(r"\$CODE\$", str(code), template)
-    template = re.sub(r"\$PING\$", str(ping_time), template)
-    return template
 
 def get_logfile_name(service: Service):
     return f"logs/{service.key}.log"
@@ -66,20 +57,13 @@ def check_last_status(service: Service):
         lines.reverse()
         for l in lines:
             if l:
-                status = l.split(' - ')[1].strip()
-                # Ping is optional, so we need to check if it exists
-                if len(l.split(' - ')) > 3:
-                    ping_time = l.split(' - ')[3].strip().replace('p', '')
-                else:
-                    ping_time = 0
-                return status, ping_time
+                return l.split(' - ')[1].strip()
     return None
 
-def log_status(service: Service, new_status = 'up', code = 200, ping_time = 0):
-    log = get_logfile_name(service)
-    timestamp = str(datetime.datetime.now())
+def log_status(ping_response: PingResponse):
+    log = get_logfile_name(ping_response.service)
     with open(log, 'a') as f:
-        f.write(f"{timestamp} - {new_status} - {code} - p{ping_time}\n")
+        f.write(f"{ping_response}\n")
 
 
 if __name__ == '__main__':
@@ -108,9 +92,10 @@ if __name__ == '__main__':
         ping_time = int(resp.elapsed.total_seconds() * 1000)
         if not ssl:
             new_status += "-nossl"
+        ping_response = PingResponse(service, new_status, code, ping_time)
         last_status = check_last_status(service)
-        log_status(service, new_status, code, ping_time)
+        log_status(ping_response)
         if last_status != new_status:
             print(f"- Status changed from {last_status} to {new_status}")
-            send_telegram_message(service, new_status, code, ping_time)
-            send_discord_message(service, new_status, code, ping_time)
+            send_telegram_message(ping_response)
+            send_discord_message(ping_response)
