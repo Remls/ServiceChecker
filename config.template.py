@@ -8,10 +8,10 @@ TG_CHAT_IDS = [
     "-1001111111",
 ]
 TG_MESSAGE_FORMAT = {
-    "up": "🟢 <code>[$TAG$]</code> $SERVICE$ is up ($CODE$)",
-    "down": "🔴 <code>[$TAG$]</code> $SERVICE$ is down ($CODE$)",
-    "up-nossl": "🟢 <code>[$TAG$]</code> $SERVICE$ is up ($CODE$)\n    ⚠️ Failed to verify SSL certificate",
-    "down-nossl": "🔴 <code>[$TAG$]</code> $SERVICE$ is down ($CODE$)\n    ⚠️ Failed to verify SSL certificate",
+    "up": "🟢 <code>[$TAG$]</code> $SERVICE$ is up (code $CODE$, $PING$ms)",
+    "down": "🔴 <code>[$TAG$]</code> $SERVICE$ is down (code $CODE$, $PING$ms)",
+    "up-nossl": "🟢 <code>[$TAG$]</code> $SERVICE$ is up (code $CODE$, $PING$ms)\n    ⚠️ Failed to verify SSL certificate",
+    "down-nossl": "🔴 <code>[$TAG$]</code> $SERVICE$ is down (code $CODE$, $PING$ms)\n    ⚠️ Failed to verify SSL certificate",
 }
 
 # Discord
@@ -20,10 +20,10 @@ DISCORD_WEBHOOKS = [
     "https://discordapp.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz",
 ]
 DISCORD_MESSAGE_FORMAT = {
-    "up": "🟢 `[$TAG$]` $SERVICE$ is up ($CODE$)",
-    "down": "🔴 `[$TAG$]` $SERVICE$ is down ($CODE$)",
-    "up-nossl": "🟢 `[$TAG$]` $SERVICE$ is up ($CODE$)\n    ⚠️ Failed to verify SSL certificate",
-    "down-nossl": "🔴 `[$TAG$]` $SERVICE$ is down ($CODE$)\n    ⚠️ Failed to verify SSL certificate",
+    "up": "🟢 `[$TAG$]` $SERVICE$ is up (code $CODE$, $PING$ms)",
+    "down": "🔴 `[$TAG$]` $SERVICE$ is down (code $CODE$, $PING$ms)",
+    "up-nossl": "🟢 `[$TAG$]` $SERVICE$ is up (code $CODE$, $PING$ms)\n    ⚠️ Failed to verify SSL certificate",
+    "down-nossl": "🔴 `[$TAG$]` $SERVICE$ is down (code $CODE$, $PING$ms)\n    ⚠️ Failed to verify SSL certificate",
 }
 
 SERVICES = {
