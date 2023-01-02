@@ -2,7 +2,7 @@ import os
 import requests
 from requests.exceptions import SSLError, Timeout
 from ping_classes import PingResponse
-from file_functions import remove_logfile, wipe_message_ids, check_last_status, log_status
+from file_functions import remove_logfile, prune_logfile, wipe_message_ids, check_last_status, log_status
 from message_functions import send_telegram_message, send_discord_message, send_all_statuses_to_telegram
 from config import SERVICES, TIMEOUT
 
@@ -10,14 +10,21 @@ from config import SERVICES, TIMEOUT
 if __name__ == '__main__':
     # Clean existing logs if asked
     clean_logs = False
+    prune_logs = False
     if len(os.sys.argv) > 1:
         arg = os.sys.argv[1].lower()
         clean_logs = arg == "--clean" or arg == "-c"
+        prune_logs = arg == "--prune" or arg == "-p"
     if clean_logs:
         print("Cleaning existing logs ...")
         wipe_message_ids()
         for service in SERVICES:
             remove_logfile(service)
+    if prune_logs:
+        print(f"Pruning existing logs ...")
+        for service in SERVICES:
+            prune_logfile(service)
+        exit(0)
 
     responses = []
     for service in SERVICES:

@@ -1,4 +1,5 @@
 import os
+import datetime
 from ping_classes import Service, PingResponse
 
 MESSAGE_ID_FILE = "logs/__msg_id"
@@ -11,6 +12,31 @@ def remove_logfile(service: Service):
     log = get_logfile_name(service)
     if os.path.exists(log):
         os.remove(log)
+
+def prune_logfile(service: Service, days = 1):
+    log = get_logfile_name(service)
+    if not os.path.exists(log):
+        return
+    with open(log) as f:
+        lines = f.readlines()
+        if not lines:
+            return
+        lines.reverse()
+        cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
+        valid_lines = []
+        for l in lines:
+            if l:
+                timestamp = l.split(' - ')[0].strip()
+                timestamp = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+                if timestamp > cutoff:
+                    valid_lines.append(l)
+                else:
+                    break
+        valid_lines.reverse()
+        lines = valid_lines
+    with open(log, 'w') as f:
+        for l in lines:
+            f.write(l)
 
 def check_last_status(service: Service):
     log = get_logfile_name(service)

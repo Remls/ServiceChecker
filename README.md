@@ -22,3 +22,19 @@ service cron start
 # or
 service cron restart
 ```
+
+### Pruning
+
+```sh
+python3 ping.py --prune
+```
+
+This will delete all logs older than 24 hours.
+
+### Start from scratch
+
+```sh
+python3 ping.py --clean
+```
+
+This will delete all logs and any stored data, and then start pinging again.
