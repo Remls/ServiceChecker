@@ -53,3 +53,8 @@ def set_message_id(chat_id, msg_id):
     with open(MESSAGE_ID_FILE, 'w') as f:
         for chat_id, msg_id in ids.items():
             f.write(f"{chat_id} - {msg_id}\n")
+
+def wipe_message_ids():
+    """Remove all message IDs from file, but keep the file itself"""
+    with open(MESSAGE_ID_FILE, 'w') as f:
+        pass

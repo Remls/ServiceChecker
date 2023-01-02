@@ -53,7 +53,7 @@ def send_all_statuses_to_telegram(ping_responses: list):
         print(f"Invalid timezone: {TIMEZONE}")
         return
     now = datetime.datetime.now(tz=tz)
-    # 12 Dec 2022 12:00
+    # 12 Dec 2022 14:00
     now = now.strftime("%d %b %Y, %H:%M")
 
     text = f"<u><b>ALL STATUSES</b></u>\n<i>Last updated {now}</i>\n\n"
