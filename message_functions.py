@@ -13,15 +13,21 @@ def send_telegram_message(ping_response: PingResponse, silent = False):
 
     template = TG_MESSAGE_FORMAT[ping_response.status]
     text = ping_response.format_message(template)
-    for chat_id in TG_CHAT_IDS:
+    for chat in TG_CHAT_IDS:
+        params = {
+            "text": text,
+            "parse_mode": "HTML",
+            "disable_notification": silent
+        }
+        if isinstance(chat, dict):
+            params["chat_id"] = chat["chat_id"]
+            if "topic_id" in chat:
+                params["message_thread_id"] = chat["topic_id"]
+        else:
+            params["chat_id"] = chat
         requests.get(
             f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage",
-            params = {
-                "chat_id": chat_id,
-                "text": text,
-                "parse_mode": "HTML",
-                "disable_notification": silent
-            }
+            params
         )
 
 def send_discord_message(ping_response: PingResponse):
@@ -62,17 +68,26 @@ def send_all_statuses_to_telegram(ping_responses: list):
         text += ping_response.format_message(template) + "\n\n"
     
     message_ids = get_message_ids()
-    for chat_id in TG_CHAT_IDS:
+    for chat in TG_CHAT_IDS:
+        chat_id = None
+        topic_id = None
+        if isinstance(chat, dict):
+            chat_id = chat["chat_id"]
+            if "topic_id" in chat:
+                topic_id = chat["topic_id"]
+        else:
+            chat_id = chat
         msg_id = message_ids.get(chat_id)
         if msg_id:
-            resp = edit_existing_message(chat_id, msg_id, text)
+            resp = edit_existing_all_status_message(text, chat_id, msg_id)
             # If the message was deleted, send a new one
             if not resp.ok:
-                send_new_message(chat_id, text)
+                send_new_all_status_message(text, chat_id, topic_id)
         else:
-            send_new_message(chat_id, text)
+            send_new_all_status_message(text, chat_id, topic_id)
 
-def edit_existing_message(chat_id, message_id, text):
+def edit_existing_all_status_message(text, chat_id, message_id):
+    """Edit existing All Statuses message on Telegram"""
     return requests.get(
         f"https://api.telegram.org/bot{TG_BOT_TOKEN}/editMessageText",
         params = {
@@ -83,14 +98,18 @@ def edit_existing_message(chat_id, message_id, text):
         }
     )
 
-def send_new_message(chat_id, text):
+def send_new_all_status_message(text, chat_id, topic_id = None):
+    """Send new All Statuses message to Telegram"""
+    params = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "HTML"
+    }
+    if topic_id:
+        params["message_thread_id"] = topic_id
     resp = requests.get(
         f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage",
-        params = {
-            "chat_id": chat_id,
-            "text": text,
-            "parse_mode": "HTML"
-        }
+        params
     )
     if resp.ok:
         msg_id = resp.json()["result"]["message_id"]

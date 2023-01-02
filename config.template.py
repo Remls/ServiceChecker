@@ -8,7 +8,13 @@ TIMEOUT = 10 # seconds
 # Leave TG_BOT_TOKEN and TG_CHAT_IDS empty if you don't want to use Telegram
 TG_BOT_TOKEN = "112233:ABCDEF"
 TG_CHAT_IDS = [
+    # For groups/channels/DMs, use their chat ID
     "-1001111111",
+    # For a specific topic in a group, use both chat ID and topic ID
+    {
+        "chat_id": "-1001111111",
+        "topic_id": "12345",
+    }
 ]
 TG_MESSAGE_FORMAT = {
     "up": "🟢 <code>[$TAG$]</code> $SERVICE$ is up\n    code $CODE$, $PING$ms",
