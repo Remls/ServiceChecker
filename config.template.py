@@ -21,7 +21,7 @@ TG_MESSAGE_FORMAT = {
     "down": "🔴 <code>[$TAG$]</code> $SERVICE$ is down\n    code $CODE$, $PING$ms",
     "up-nossl": "🟢 <code>[$TAG$]</code> $SERVICE$ is up\n    code $CODE$, $PING$ms\n    ⚠️ Failed to verify SSL certificate",
     "down-nossl": "🔴 <code>[$TAG$]</code> $SERVICE$ is down\n    code $CODE$, $PING$ms\n    ⚠️ Failed to verify SSL certificate",
-    "down-timeout": f"🔴 <code>[$TAG$]</code> $SERVICE$ is down\n    failed to respond after {TIMEOUT} seconds",
+    "down-timeout": f"⏳ <code>[$TAG$]</code> $SERVICE$ is unreachable\n    failed to respond after {TIMEOUT} seconds",
 }
 
 # Discord
@@ -34,7 +34,7 @@ DISCORD_MESSAGE_FORMAT = {
     "down": "🔴 `[$TAG$]` $SERVICE$ is down\n    code $CODE$, $PING$ms",
     "up-nossl": "🟢 `[$TAG$]` $SERVICE$ is up\n    code $CODE$, $PING$ms\n    ⚠️ Failed to verify SSL certificate",
     "down-nossl": "🔴 `[$TAG$]` $SERVICE$ is down\n    code $CODE$, $PING$ms\n    ⚠️ Failed to verify SSL certificate",
-    "down-timeout": f"🔴 `[$TAG$]` $SERVICE$ is down\n    failed to respond after {TIMEOUT} seconds",
+    "down-timeout": f"⏳ `[$TAG$]` $SERVICE$ is unreachable\n    failed to respond after {TIMEOUT} seconds",
 }
 
 SERVICES = {
